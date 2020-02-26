@@ -187,8 +187,20 @@ namespace MySql.Data.MySqlClient
       MySqlConnection cn = new MySqlConnection(connectionString);
       cn.Open();
 
-      //call the private overload that takes an internally owned connection in place of the connection string
-      return ExecuteReader(cn, null, commandText, commandParameters, false);
+      try
+      {
+        //call the private overload that takes an internally owned connection in place of the connection string
+        return ExecuteReader(cn, null, commandText, commandParameters, false);
+      }
+      catch(Exception ex)
+      {
+        if (cn.connectionState == ConnectionState.Open)
+        {
+          Console.WriteLine("Mysql custom log. Closing connection in ExecuteReader on exception. {0}", ex.Message);
+          cn.Close();
+        }
+        throw;
+      }
     }
 
     /// <summary>
