@@ -199,12 +199,16 @@ namespace MySql.Data.MySqlClient
       }
       catch (Exception ex)
       {
+        Console.WriteLine(String.Format("Mysql custom log: Cannot open connection to db: Message: {0}, Exception {1}", ex.Message, ex.ToString()));
         throw new MySqlException(Resources.UnableToConnectToHost,
-            (int)MySqlErrorCode.UnableToConnectToHost, ex);
+        (int)MySqlErrorCode.UnableToConnectToHost, ex);
       }
       if (baseStream == null)
+      {
+        Console.WriteLine("Mysql custom log: Cannot open connection to db. baseStream is null. Will throw UnableToConnectToHost");
         throw new MySqlException(Resources.UnableToConnectToHost,
-            (int)MySqlErrorCode.UnableToConnectToHost);
+        (int)MySqlErrorCode.UnableToConnectToHost);
+      }
 
       int maxSinglePacket = 255 * 255 * 255;
       stream = new MySqlStream(baseStream, Encoding, false);
