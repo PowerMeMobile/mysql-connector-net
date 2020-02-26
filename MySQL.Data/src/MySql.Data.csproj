@@ -5,10 +5,10 @@
     <Description>MySql.Data.MySqlClient .Net Core Class Library</Description>
     <Copyright>Copyright (c) 2016, 2019, Oracle and/or its affiliates. All rights reserved.</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>8.0.19</Version>
+    <Version>8.1.19</Version>
     <Authors>Oracle</Authors>
     <AssemblyName>MySql.Data</AssemblyName>
-    <TargetFrameworks>net452;net48;netstandard2.0;netstandard2.1;</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeThirdPartyAssemblies</TargetsForTfmSpecificBuildOutput>
     <PackageId>MySql.Data</PackageId>
     <PackageTags>MySql;.NET Connector;MySql Connector/NET;netcore;.Net Core;MySql Conector/Net Core;coreclr;C/NET;C/Net Core</PackageTags>
@@ -108,12 +108,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'commercial' ">
-    <DefineConstants>$(DefineConstants);TRACE;RELEASE;COMMERCIAL</DefineConstants>
-    <TargetFrameworks>net452;</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-  </PropertyGroup>
-
   <ItemGroup>
     <Compile Update="Framework\net452\Installer.cs">
       <SubType>Component</SubType>
@@ -143,8 +137,7 @@
 
   <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets" />
   <PropertyGroup>
-    <PostBuildEvent Condition="'$(OS)' == 'Windows_NT' ">$(ProjectDir)Properties\metadata.sh $(ConfigurationName) $(Version)</PostBuildEvent>
-    <PostBuildEvent Condition="'$(OS)' != 'Windows_NT' ">bash $(ProjectDir)Properties/metadata.sh $(ConfigurationName) $(Version)</PostBuildEvent>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>
