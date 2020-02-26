@@ -99,6 +99,7 @@ namespace MySql.Data.Types
       {
         case "CHAR": return MySqlDbType.String;
         case "VARCHAR": return MySqlDbType.VarChar;
+        case "NVARCHAR": return MySqlDbType.VarChar;
         case "DATE": return MySqlDbType.Date;
         case "DATETIME": return MySqlDbType.DateTime;
         case "NUMERIC":
