@@ -36,7 +36,7 @@ using System.Security;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("MySql.Data")]
-[assembly: AssemblyDescription("ADO.Net driver for MySQL for .Net Framework and .Net Core")]
+[assembly: AssemblyDescription("ADO.Net driver for MySQL for .Net Framework and .Net Core + pmm fixes for NVARCHAR")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Oracle")]
 [assembly: AssemblyProduct("MySql.Data.Core")]
