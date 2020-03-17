@@ -1031,7 +1031,7 @@ namespace MySql.Data.MySqlClient
         fieldName = fieldName.Remove(0, StoredProcedure.ParameterPrefix.Length + 1);
         MySqlParameter parameter = Command.Parameters.GetParameterFlexible(fieldName, true);
 
-        IMySqlValue v = MySqlField.GetIMySqlValue(parameter.MySqlDbType);
+        IMySqlValue v = MySqlField.GetIMySqlValue(parameter.MySqlDbType, driver.Settings);
         if (v is MySqlBit)
         {
           MySqlBit bit = (MySqlBit)v;

@@ -340,7 +340,7 @@ namespace MySql.Data.MySqlClient
     private void SetMySqlDbType(MySqlDbType mysqlDbtype)
     {
       _mySqlDbType = mysqlDbtype;
-      ValueObject = MySqlField.GetIMySqlValue(_mySqlDbType);
+      ValueObject = MySqlField.GetIMySqlValue(_mySqlDbType, null);
       SetDbTypeFromMySqlDbType();
     }
 
@@ -569,7 +569,7 @@ namespace MySql.Data.MySqlClient
           _mySqlDbType = MySqlDbType.Geometry;
       }
 
-      ValueObject = MySqlField.GetIMySqlValue(_mySqlDbType);
+      ValueObject = MySqlField.GetIMySqlValue(_mySqlDbType, null);
     }
   }
 

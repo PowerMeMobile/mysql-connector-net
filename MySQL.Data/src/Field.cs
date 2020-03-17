@@ -262,7 +262,7 @@ namespace MySql.Data.MySqlClient
 
     public IMySqlValue GetValueObject()
     {
-      IMySqlValue v = GetIMySqlValue(Type);
+      IMySqlValue v = GetIMySqlValue(Type, driver.Settings);
       if (v is MySqlByte && ColumnLength == 1 && driver.Settings.TreatTinyAsBoolean)
       {
         MySqlByte b = (MySqlByte)v;
@@ -278,7 +278,7 @@ namespace MySql.Data.MySqlClient
       return v;
     }
 
-    public static IMySqlValue GetIMySqlValue(MySqlDbType type)
+    public static IMySqlValue GetIMySqlValue(MySqlDbType type, MySqlConnectionStringBuilder settings)
     {
       switch (type)
       {
@@ -339,7 +339,9 @@ namespace MySql.Data.MySqlClient
         case MySqlDbType.VarBinary:
           return new MySqlBinary(type, true);
         case MySqlDbType.Guid:
-          return new MySqlGuid();
+            var g = new MySqlGuid();
+            if (settings != null) g.OldGuids = settings.OldGuids;
+            return g;
         default:
           throw new MySqlException("Unknown data type");
       }
