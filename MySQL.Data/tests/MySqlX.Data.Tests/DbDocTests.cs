@@ -1,4 +1,4 @@
-// Copyright (c) 2015, 2018, Oracle and/or its affiliates. All rights reserved.
+// Copyright (c) 2015, 2020, Oracle and/or its affiliates. All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -28,26 +28,32 @@
 
 using MySqlX.XDevAPI;
 using System;
-using Xunit;
+using NUnit.Framework;
 
 namespace MySqlX.Data.Tests
 {
   public class DbDocTests
   {
-    [Fact]
+    private string RemoveLineEndings(string str)
+    {
+      return str.Replace("\r\n", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
+    }
+
+    [Test]
     public void SimpleConverstionToJson()
     {
       DbDoc d = new DbDoc();
       d.SetValue("_id", 1);
       d.SetValue("pages", 20);
       string s = d.ToString();
-      Assert.Equal(@"{
+      string json = @"{
   ""_id"": 1, 
   ""pages"": 20
-}".Replace("\r\n", Environment.NewLine), d.ToString());
+}";
+      StringAssert.AreEqualIgnoringCase(RemoveLineEndings(json), RemoveLineEndings(s));
     }
 
-    [Fact]
+    [Test]
     public void SimpleParse()
     {
       DbDoc d = new DbDoc(@"{ ""id"": 1, ""pages"": 20}");
@@ -57,7 +63,7 @@ namespace MySqlX.Data.Tests
       Assert.True(d.Equals(d2));
     }
 
-    [Fact]
+    [Test]
     public void NestedParse()
     {
       DbDoc d = new DbDoc(@"{ ""id"": 1, ""pages"": 20, 
@@ -70,7 +76,7 @@ namespace MySqlX.Data.Tests
       Assert.True(d.Equals(d2));
     }
 
-    [Fact]
+    [Test]
     public void ParseWithArray()
     {
       string json = @"{
@@ -105,11 +111,11 @@ namespace MySqlX.Data.Tests
       d2.SetValue("id", 1);
       d2.SetValue("pages", 20);
       d2.SetValue("books", docs);
-      Assert.Equal(d.ToString(), d2.ToString());
-      Assert.Equal(json.Replace("\r\n", Environment.NewLine), d2.ToString());
+      StringAssert.AreEqualIgnoringCase(d.ToString(), d2.ToString());
+      StringAssert.AreEqualIgnoringCase(RemoveLineEndings(json), RemoveLineEndings(d2.ToString()));
     }
 
-    [Fact]
+    [Test]
     public void ParseLongValues()
     {
       DbDoc d = new DbDoc(@"{ ""id"": 1, ""pages"": " + ((long)int.MaxValue + 1) + "}");
@@ -119,7 +125,7 @@ namespace MySqlX.Data.Tests
       Assert.True(d.Equals(d2));
     }
 
-    [Fact]
+    [Test]
     public void ParseFloatValues()
     {
       DbDoc d = new DbDoc(@"{ ""id"": 1, ""pi"": 3.14159 }");

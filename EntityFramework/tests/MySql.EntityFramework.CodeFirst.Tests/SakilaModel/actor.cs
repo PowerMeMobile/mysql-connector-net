@@ -1,4 +1,4 @@
-// Copyright (c) 2014, 2017, Oracle and/or its affiliates. All rights reserved.
+// Copyright (c) 2014, 2020 Oracle and/or its affiliates.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -30,39 +30,32 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-#if EF6
-using System.Data.Entity.Spatial;
-#endif
 
 namespace MySql.Data.EntityFramework.CodeFirst.Tests
 {
-#if EF6
-  [Table("sakila.actor")]
-#else
   [Table("actor")]
-#endif
-    public partial class actor
+  public partial class actor
+  {
+    public actor()
     {
-        public actor()
-        {
-            film_actor = new HashSet<film_actor>();
-        }
-
-        [Key]
-        [Column(TypeName = "usmallint")]
-        public int actor_id { get; set; }
-
-        [Required]
-        [StringLength(45)]
-        public string first_name { get; set; }
-
-        [Required]
-        [StringLength(45)]
-        public string last_name { get; set; }
-
-        [Column(TypeName = "timestamp")]
-        public DateTime last_update { get; set; }
-
-        public virtual ICollection<film_actor> film_actor { get; set; }
+      film_actor = new HashSet<film_actor>();
     }
+
+    [Key]
+    [Column(TypeName = "usmallint")]
+    public int actor_id { get; set; }
+
+    [Required]
+    [StringLength(45)]
+    public string first_name { get; set; }
+
+    [Required]
+    [StringLength(45)]
+    public string last_name { get; set; }
+
+    [Column(TypeName = "timestamp")]
+    public DateTime last_update { get; set; }
+
+    public virtual ICollection<film_actor> film_actor { get; set; }
+  }
 }

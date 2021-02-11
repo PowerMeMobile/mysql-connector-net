@@ -1,4 +1,4 @@
-// Copyright © 2016, 2017, Oracle and/or its affiliates. All rights reserved.
+// Copyright © 2016, 2020, Oracle and/or its affiliates. All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -26,14 +26,13 @@
 // along with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA
 
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Metadata;
-using MySql.Data.EntityFrameworkCore.Extensions;
+using MySql.EntityFrameworkCore.Extensions;
+using MySql.EntityFrameworkCore.Basic.Tests.Utils;
 using System;
 
-namespace MySql.Data.EntityFrameworkCore.Tests.DbContextClasses
+namespace MySql.EntityFrameworkCore.Basic.Tests.DbContextClasses
 {
 
   public class NoConfigurationContext : DbContext
@@ -257,8 +256,7 @@ namespace MySql.Data.EntityFrameworkCore.Tests.DbContextClasses
         entity.Property(e => e.BuildingName10)
             .IsRequired()
             .HasColumnName("building_name10")
-            .HasColumnType("longblob")
-            .HasMaxLength(-1);
+            .HasColumnType("longblob");
 
         entity.Property(e => e.BuildingName11)
             .IsRequired()
@@ -314,8 +312,7 @@ namespace MySql.Data.EntityFrameworkCore.Tests.DbContextClasses
         entity.Property(e => e.BuildingName5)
             .IsRequired()
             .HasColumnName("building_name5")
-            .HasColumnType("longtext")
-            .HasMaxLength(-1);
+            .HasColumnType("longtext");
 
         entity.Property(e => e.BuildingName6)
             .IsRequired()
@@ -482,7 +479,7 @@ namespace MySql.Data.EntityFrameworkCore.Tests.DbContextClasses
     public DbSet<MyTest> MyTest { get; set; }
   }
 
-  public class CharsetTestContext : MyTestContext
+  public class ConnStringOnConfiguringContext : MyTestContext
   {
     public DbSet<TestCharsetDA> TestCharsetDA { get; set; }
     public DbSet<TestCharsetFA> TestCharsetFA { get; set; }

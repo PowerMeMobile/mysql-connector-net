@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, 2019, Oracle and/or its affiliates. All rights reserved.
+﻿// Copyright (c) 2016, 2020 Oracle and/or its affiliates.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -30,10 +30,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using MySql.EntityFrameworkCore.Migrations.Tests.Utilities;
-using MySql.Data.EntityFrameworkCore.Metadata.Internal;
+using MySql.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Linq;
-using Xunit;
+using NUnit.Framework;
 
 namespace MySql.EntityFrameworkCore.Migrations.Tests
 {
@@ -43,7 +43,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
       protected virtual string Sql { get; set; }
       protected static string EOL => Environment.NewLine;
 
-      [Fact]
+      [Test]
       public virtual void CreateTableOperation()
       {
         Generate(
@@ -56,19 +56,22 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
                           new AddColumnOperation
                           {
                               Name = "Id",
+                              Table ="People",
                               ClrType = typeof(int),
                               IsNullable = false,
-                              [MySQLAnnotationNames.AutoIncrement] = true
+                              [MySQLAnnotationNames.LegacyValueGeneratedOnAdd] = true
                           },
                           new AddColumnOperation
                           {
                               Name = "EmployerId",
+                              Table ="People",
                               ClrType = typeof(int),
                               IsNullable = true
                           },
                            new AddColumnOperation
                           {
                               Name = "SSN",
+                              Table ="People",
                               ClrType = typeof(string),
                               ColumnType = "char(11)",
                               IsNullable = true
@@ -99,7 +102,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
       }
 
 
-    [Fact]
+    [Test]
     public void AddColumnOperation()
     {
       Generate(new AddColumnOperation
@@ -115,7 +118,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
     }
 
 
-    [Fact]
+    [Test]
     public virtual void AddColumnOperationWithComputedValueSql()
     {
       Generate(new AddColumnOperation
@@ -131,7 +134,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
      );
     }
 
-    [Fact]
+    [Test]
     public virtual void AddColumnOperationWithDefaultValueSql()
     {
       Generate(new AddColumnOperation
@@ -148,7 +151,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
     }
 
 
-    [Fact]
+    [Test]
     public virtual void AddColumnOperation_with_maxLength()
     {
       Generate(
@@ -166,7 +169,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
     }
 
 
-    [Fact]
+    [Test]
     public virtual void AlterColumnOperation()
     {
       Generate(new AlterColumnOperation
@@ -182,7 +185,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
     }
 
 
-    [Fact]
+    [Test]
     public virtual void AlterColumnOperationWithoutType()
     {
       Generate(
@@ -195,7 +198,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
     }
 
 
-    [Fact]
+    [Test]
     public virtual void RenameTableOperationInSchema()
     {
        Generate(
@@ -208,7 +211,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
               });
     }
 
-    [Fact]
+    [Test]
     public virtual void CreateUniqueIndexOperation()
     {
         Generate(
@@ -223,7 +226,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
     }
 
 
-    [Fact]
+    [Test]
     public virtual void CreateNonUniqueIndexOperation()
     {
         Generate(
@@ -236,7 +239,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
             });
     }
 
-    [Fact]
+    [Test]
     public virtual void RenameIndexOperation()
     {
       Generate(
@@ -248,7 +251,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
            });
     }
 
-    [Fact]
+    [Test]
     public virtual void DropIndexOperation()
     {
       Generate(
@@ -259,7 +262,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
             });
     }
 
-    [Fact]
+    [Test]
     public virtual void DropPrimaryKeyOperation()
     {
       Generate(
@@ -270,7 +273,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
         });
     }
 
-    [Fact]
+    [Test]
     public virtual void AddPrimaryKeyOperation()
     {
       Generate(

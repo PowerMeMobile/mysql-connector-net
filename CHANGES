@@ -1,3 +1,77 @@
+8.0.23
+- Added support for .NET Framework 4.8 in MySQL.Web (Oracle Bug #31799902).
+- Replace language in source code and files (WL14211).
+- Deprecated the "Ignore Prepare" connection string option (Oracle Bug #31872906).
+- Added support for the SASL authentication protocol using the SCRAM-SHA-256 method (WL14255).
+- Updated the list of SSH ciphers, added validation for Host Key Algorithms (Oracle Bug #31917057).
+- Fixed a bug that prevented the Certificate Thumbprint from being checked during a connection (MySQL Bug #100926, Oracle Bug #31954655).
+- Fixed a bug caused by a wrong casting when calling the EnsureCreatedAsync method, using EF Core, if the database already exists (MySQL Bug #100773, Oracle Bug #31860492).
+- Fixed bad handling of Wait() for an async execution that could cause a program to hang indefinitely hence blocking it (MySQL Bug #100692, Oracle Bug #31945397).
+- Removing aliases(address,addr,network address) for server option in the connection string.(Oracle Bug #31248601)
+- Fixed a bug caused by setting an Int32 default value to any enum parameter (MySQL Bug #84701, Oracle Bug #25467610).
+- Added support for EF Core 5.0 (WL14214).
+- Fixed the COM_STMT_EXECUTE packet structure to only send new-params-bound flag when it has parameters (Oracle Bug #32208427).
+- Fixed types validation for stored procedure parameters (MySQL Bug #101302, Oracle Bug #32066024).
+
+
+8.0.22
+- Fixed an error that occurred when trying to find the "__EFMigrationHistory" table during a migration using EF Core (MySQL Bug #85902, Oracle Bug #2501276).
+- Fixed a third-party library that was built in debug mode now is built in release mode (MySQL Bug #98955, Oracle Bug #31061034).
+- Fixed an error that occurred when using the Convert.ToString method on a property of an entity in EF Core (MySQL Bug #99523, Oracle Bug #31337609).
+- Fixed a bug that sets column to "NOT NULL" when using the alter-column migration script (MySQL Bug #96913, Oracle Bug #31070175). 
+- Added support for Entity Framework 6.4 that runs over .NET Core 3.1 (WL14076).
+- Added support for .NET 5.0 (WL14044).
+- Added the new 'allowLoadLocalInfileInPath' connection string option that allows the user to specify a safe path where files can be sent to server using Load Data Local (WL-14093).
+- Added support for configurable compression algorithms (WL14001).
+- Fixed a bug that occurred when MySqlParameter, specifically created with value zero, is mapped as MySQLDbType with a default value of null, instead of an Int32(MySQL Bug #85027, Oracle Bug #25573071 ).
+- Added support for the SASL authentication protocol using SCRAM-SHA-1 method (WL14116). 
+- Added support for the mysql_clear_password plugin (WL14002).
+- Fixed the creation of corrupted sql statements by the MigrationSqlGenerator in EF (MySQL Bug #80159, Oracle Bug #22669961).
+- Fixed how microseconds are set in the MySqlTime class. (MySQL Bug #100218, Oracle Bug #31623730).
+- Fixed the wrong mapping from TINYINT(1)/BIT(1) to BOOL using scaffolding in EF Core (MySQL Bug #99419, Oracle Bug #31304070).
+- Added a missing implementation to TCPClient (MySQL Bug #82810, Oracle Bug #26427802).
+- Fixed a bug that is present only with MySQL Server versions before than 8.0, as previous versions return a different data type while retrieving ROUTINE_DEFINITION value(MySQL Bug #100208, Oracle Bug #31622907).
+- Fixed a bug that occurred because of a bad interpretation of every CHAR(36) column as GUID type (MySQL Bug #93399, Oracle Bug #29963760). 
+- Fixed a bug that prevented the use of EF Code First Migrations when the system decimal separator was a character other than "." (MySQL Bug #94358, Oracle Bug #30965702).
+- Fixed a bug that misinterpreted a DateTime value as a String (MySQL Bug #100159, Oracle Bug #31598178).
+- Fixed missing table schemas when using EF Code First (MySQL Bug #94343, Oracle Bug #31323788).
+- Deprecated aliases(address,addr,network address) for server option in the connection string.(Oracle Bug #31248601)
+- Fixed an error that occurred when trying to execute a procedure and the database was not specified in the connection string (MySQL Bug #100306, Oracle Bug #31669587).
+- Contribution added: Included validation that checks if the connection is not null before canceling a command to avoid unwanted exceptions (MySQL Bug #86836, Oracle Bug #26362494). Thanks to Denis Yarkovoy for the contribution.
+- Fixed a bad reading of the ReservedWords that results in an incorrect data (MySQL Bug #89639, Oracle Bug #27536342).
+- Fixed the missing length specifier for a binary column when it was provided (MySQL Bug #81179, Oracle Bug #23171349).
+- Fixed the wrong exception handling when setting the command timeout to a negative value (MySQL Bug #87316, Oracle Bug #26574860).
+- Added a FormatException exception to indicate when the data type defined in a stored procedure is a type other than MySqlParameter and the Prepare() method is used.(MySQL Bug #99793, Oracle Bug #31458774).
+
+
+8.0.21
+- Revised SqlNullValueException, raised when a stored procedure is executed by a user with sufficient privileges(MySQL Bug #96143, Oracle Bug #30029732).
+- Fixed an error that returned a BLOB object, instead of the expected MySqlGeometry object, when the wrong type assignment was used with the AddWithValue method to define a command parameter and the type was inferred (MySQL Bug #96499, MySQL Bug #96498, Oracle Bug #30169716, Oracle Bug #30169715).
+- Fixed an issue in which the wrong isolation level was obtained after a transaction finished (MySQL Bug #86263, Oracle Bug #26035791).
+- Fixed an error caused by a missing unsigned flag when a bigint field is used.(MySQL Bug #95382, Oracle Bug #29802379).
+- Fixed an error that returned NullReferenceException when initializing a MySqlConnection with null (MySQL Bug #98322, Oracle Bug #30791289).
+- Contribution added: Fixed a typo in SimpleRoleProvider.GetRoleId that caused an unexpected behavior (MySQL Bug #83657, Oracle Bug #25046352). Thanks to Stein Setvik for the contribution.
+- Fixed an error that occurred while parsing a MySqlTimeSpan data type (MySQL Bug #91770, Oracle Bug #28393733).
+- Added code to clean up the internal ResulSet in DataReader (MySQL Bug #97300, Oracle Bug #30444429).
+- Fixed an error that occurred when having two databases with same table on a rename-column migration (MySQL Bug 72424, Oracle Bug #23291095).
+- Fixed an error that occurred when the database name or stored procedure name contains a period "." (MySQL Bug #99371, Oracle Bug #31237338).
+- Fixed a bug that occurred when a database name is set as uppercase in the connection string, but the actual database name is lowercase.(Oracle Bug #31173265).
+
+
+8.0.20
+- Fixed an error that occurred unexpectedly when an IN operator with blank spaces was part of a SELECT statement (Oracle Bug #29838254).
+- Added support to handle Schema validation in the commands CreateCollection and ModifyCollection (WL13007)
+- Added support for compressing data exchanged between the server and client when using the X Protocol. A new connection option,
+  compression, provides the following values: Preferred (Default), Required, Disabled (WL12980).
+- Removed the ResetReader method when a MySqlCommand object is disposed of, because it restricted access to the MySqlDataReader object after the MySqlCommand object closed (MySQL Bug #89159, Oracle Bug #27441433).
+- Added support for EF Core 3.1 (WL13793).
+- Fix an error that occurred when using EF Core 3.1 due to unsupported version (MySql Bug #96990, Oracle Bug #30347893).
+- Fixed a bug on prepared statements with parameters of type MySqlDbType.JSON(MySQL Bug #95984, Oracle Bug #29959124).
+- Fixed the Method Not Implemented exception when trying to use Entity Framework Core 3.1.1 Scaffolding (MySQL Bug #98011, Oracle Bug #30677382).
+- Fixed bad handling of nullable boolean properties in Entity Framework Core (MySQL Bug #93028, Oracle Bug #29833103).
+- Fixed an error that occurred when more than one IP address is found in DNS for a named host (MySQL Bug #97448, Oracle Bug #30970949).
+
+
 8.0.19
 - Fixed unexpected behavior when connection string is retrieved, it discloses connection password in a clone connection(MySQL Bug #97473, Oracle Bug #30502718).
 - Added support for multi-host and failover (WL13304).

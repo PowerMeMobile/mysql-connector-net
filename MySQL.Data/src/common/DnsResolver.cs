@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
+﻿// Copyright (c) 2019, 2020, Oracle and/or its affiliates. All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -48,14 +48,14 @@ namespace MySql.Data.Common
     /// <summary>
     /// Initializes a new instance of the <see cref="Ubiety.Dns.Core.Resolver"/> class.
     /// </summary>
-    internal static void CreateResolver(string serviceName, TransportType transportType = TransportType.Udp)
+    internal static void CreateResolver(string serviceName)
     {
       _resolver = new Resolver
       {
         Recursion = true,
         UseCache = true,
         Retries = 3,
-        TransportType = transportType
+        TransportType = TransportType.Udp
       };
 
       ServiceName = serviceName;
@@ -69,8 +69,6 @@ namespace MySql.Data.Common
     {
       if (_resolver == null)
         CreateResolver(serviceName);
-      else if (_resolver.TransportType == TransportType.Tcp)
-        CreateResolver(serviceName, TransportType.Tcp);
 
       List<DnsSrvRecord> records = new List<DnsSrvRecord>();
       const QuestionType qType = QuestionType.SRV;
@@ -86,11 +84,6 @@ namespace MySql.Data.Common
         Reset();
         return SortSrvRecords(records);
       }
-      else if (_resolver.TransportType == TransportType.Udp)
-      {
-        _resolver.TransportType = TransportType.Tcp;
-        return GetDnsSrvRecords(serviceName);
-      }
       else
         throw new MySqlException(string.Format(Resources.DnsSrvNoHostsAvailable, ServiceName));
     }
@@ -100,7 +93,7 @@ namespace MySql.Data.Common
     /// </summary>
     /// <param name="srvRecords">List of <see cref="DnsSrvRecord"/>s to sort.</param>
     /// <returns>A new list of sorted <see cref="DnsSrvRecord"/>s.</returns>
-    private static List<DnsSrvRecord> SortSrvRecords(List<DnsSrvRecord> srvRecords)
+    internal static List<DnsSrvRecord> SortSrvRecords(List<DnsSrvRecord> srvRecords)
     {
       srvRecords.Sort(new DnsSrvRecord());
 

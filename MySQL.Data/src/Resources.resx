@@ -127,19 +127,19 @@
     <value>The stream has already been closed</value>
   </data>
   <data name="BufferCannotBeNull" xml:space="preserve">
-    <value> The buffer cannot be null</value>
+    <value>The buffer cannot be null</value>
   </data>
   <data name="BufferNotLargeEnough" xml:space="preserve">
-    <value> Buffer is not large enough</value>
+    <value>The buffer is not large enough</value>
   </data>
   <data name="OffsetCannotBeNegative" xml:space="preserve">
-    <value> Offset cannot be negative</value>
+    <value>The offset cannot be negative</value>
   </data>
   <data name="CountCannotBeNegative" xml:space="preserve">
     <value> Count cannot be negative</value>
   </data>
   <data name="StreamNoRead" xml:space="preserve">
-    <value> The stream does not support reading</value>
+    <value>The stream does not support reading</value>
   </data>
   <data name="NamedPipeNoSetLength" xml:space="preserve">
     <value>NamedPipeStream doesn't support SetLength</value>
@@ -450,10 +450,6 @@
   <data name="UnableToEnableQueryAnalysis" xml:space="preserve">
     <value>Unable to enable query analysis.  Be sure the MySql.Data.EMTrace assembly is properly located and registered.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="keywords" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>keywords.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
   <data name="TraceQueryNormalized" xml:space="preserve">
     <value>{0}: Query Normalized: {2}</value>
   </data>
@@ -645,5 +641,23 @@
   </data>
   <data name="DuplicatedConnectionOption" xml:space="preserve">
     <value>Connection option '{0}' is duplicated.</value>
+  </data>
+  <data name="ExecuteProcedureUnauthorized" xml:space="preserve">
+    <value>Verify that user '{0}'@'{1}' has enough privileges to execute.</value>
+  </data>
+  <data name="DeprecatedSshAlgorithm" xml:space="preserve">
+    <value>The {0} algorithm being used by the server({1}) has been deprecated and will be removed in a future version. It is recommended that you configure the server to use a non-deprecated {0} algorithm.</value>
+  </data>
+  <data name="ClearPasswordNotSupported" xml:space="preserve">
+    <value>Clear-password authentication is not supported over insecure channels.</value>
+  </data>
+  <data name="UnsafePathForLoadLocalInfile" xml:space="preserve">
+    <value>Trying to upload a file from outside the path set on 'allowloadlocalinfileinpath' is invalid.</value>
+  </data>
+  <data name="InvalidPathForLoadLocalInfile" xml:space="preserve">
+    <value>Either provide a valid path for 'allowloadlocalinfileinpath' or enable 'allowloadlocalinfile'.</value>
+  </data>
+  <data name="InvalidCertificateThumbprint" xml:space="preserve">
+    <value>Certificate with Thumbprint '{0}' not found.</value>
   </data>
 </root>

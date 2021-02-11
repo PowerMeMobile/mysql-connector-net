@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, 2019, Oracle and/or its affiliates. All rights reserved.
+﻿// Copyright (c) 2016, 2020 Oracle and/or its affiliates.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -26,21 +26,36 @@
 // along with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA
 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.Internal;
-using MySql.Data.EntityFrameworkCore.Storage.Internal;
-using MySql.EntityFrameworkCore.Migrations.Tests.Utilities;
-using MySql.Data.EntityFrameworkCore;
-using MySql.Data.EntityFrameworkCore.Metadata;
-using MySql.Data.EntityFrameworkCore.Migrations;
-using System.Diagnostics;
-using Xunit;
+using Microsoft.Extensions.DependencyInjection;
+using MySql.EntityFrameworkCore.Extensions;
+using MySql.EntityFrameworkCore.Basic.Tests.Utils;
+using NUnit.Framework;
 
 namespace MySql.EntityFrameworkCore.Migrations.Tests
 {
   public partial class MySQLMigrationsGeneratorTest : MySQLMigrationsGeneratorTestBase
   {
-    [Fact]
+    protected override IMigrationsSqlGenerator SqlGenerator
+    {
+      get
+      {
+        var optionsBuilder = new DbContextOptionsBuilder();
+        optionsBuilder.UseMySQL(MySQLTestStore.rootConnectionString + "database=test;");
+
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddEntityFrameworkMySQL()
+          .AddDbContext<MyTestContext>();
+
+        optionsBuilder.UseInternalServiceProvider(serviceCollection.BuildServiceProvider());
+
+        return new DbContext(optionsBuilder.Options).GetService<IMigrationsSqlGenerator>();
+      }
+    }
+
+    [Test]
     public override void CreateTableOperation()
     {
       base.CreateTableOperation();
@@ -59,7 +74,7 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
       Assert.True(result == Sql || fullResult == Sql);
     }
 
-    [Fact]
+    [Test]
     public override void AddColumnOperation_with_maxLength()
     {
       base.AddColumnOperation_with_maxLength();
@@ -68,83 +83,84 @@ namespace MySql.EntityFrameworkCore.Migrations.Tests
       Assert.True(result == Sql || fullResult == Sql);
     }
 
-    [Fact]
+    [Test]
     public override void AddColumnOperationWithComputedValueSql()
     {
       base.AddColumnOperationWithComputedValueSql();
-      Assert.Equal("ALTER TABLE `People` ADD `DisplayName` varchar(50) AS  (CONCAT_WS(' ', LastName , FirstName));" + EOL, Sql);
+      Assert.AreEqual("ALTER TABLE `People` ADD `DisplayName` varchar(50) AS (CONCAT_WS(' ', LastName , FirstName));" + EOL, Sql);
     }
 
-    [Fact]
+    [Test]
     public override void AddColumnOperationWithDefaultValueSql()
     {
       base.AddColumnOperationWithDefaultValueSql();
-      Assert.Equal("ALTER TABLE `People` ADD `Timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP;"  + EOL, Sql);
+      Assert.AreEqual("ALTER TABLE `People` ADD `Timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP;"  + EOL, Sql);
     }
 
-    [Fact]
+    [Test]
     public override void AlterColumnOperation()
     {
       base.AlterColumnOperation();
-      Assert.Equal("ALTER TABLE Person MODIFY `Age` int NOT NULL DEFAULT 7;" + EOL, Sql);
+      Assert.AreEqual("ALTER TABLE `Person` MODIFY `Age` int NOT NULL DEFAULT 7;" + EOL, Sql);
     }
 
 
-    [Fact]
+    [Test]
     public override void AlterColumnOperationWithoutType()
     {
       base.AlterColumnOperationWithoutType();
-      Assert.Equal("ALTER TABLE Person MODIFY `Age` int NOT NULL;" + EOL, Sql);
+      Assert.AreEqual("ALTER TABLE `Person` MODIFY `Age` int NOT NULL;" + EOL, Sql);
     }
 
-    [Fact]
+    [Test]
     public override void RenameTableOperationInSchema()
     {
       base.RenameTableOperationInSchema();
-      Assert.Equal("ALTER TABLE t1 RENAME t2;" + EOL, Sql);
+      Assert.AreEqual("ALTER TABLE t1 RENAME t2;" + EOL, Sql);
     }
 
-    [Fact]
+    [Test]
     public override void CreateUniqueIndexOperation()
     {
       base.CreateUniqueIndexOperation();
-      Assert.Equal("CREATE UNIQUE INDEX `IXPersonName` ON `Person` (`FirstName`, `LastName`);" + EOL, Sql);
+      Assert.AreEqual("CREATE UNIQUE INDEX `IXPersonName` ON `Person` (`FirstName`, `LastName`);" + EOL, Sql);
     }
 
-    [Fact]
+    [Test]
     public override void CreateNonUniqueIndexOperation()
     {
       base.CreateNonUniqueIndexOperation();
 
-      Assert.Equal("CREATE INDEX `IXPersonName` ON `Person` (`Name`);" + EOL, Sql);
+      Assert.AreEqual("CREATE INDEX `IXPersonName` ON `Person` (`Name`);" + EOL, Sql);
     }
 
-    [Fact(Skip = "Rename index not supported yet")]
+    [Test]
+    [Ignore("Rename index not supported yet")]
     public override void RenameIndexOperation()
     {
       base.RenameIndexOperation();
-      Assert.Equal("DROP INDEX IXPersonName ON Person; CREATE INDEX IXNombre;" + EOL, Sql);
+      Assert.AreEqual("DROP INDEX IXPersonName ON Person; CREATE INDEX IXNombre;" + EOL, Sql);
     }
 
-    [Fact]
+    [Test]
     public override void DropIndexOperation()
     {
       base.DropIndexOperation();
-      Assert.Equal("DROP INDEX IXPersonName ON Person;" + EOL, Sql);
+      Assert.AreEqual("DROP INDEX IXPersonName ON Person;" + EOL, Sql);
     }
 
-    [Fact]
+    [Test]
     public override void DropPrimaryKeyOperation()
     {
       base.DropPrimaryKeyOperation();
-      Assert.Equal(string.Empty, Sql);
+      Assert.AreEqual(string.Empty, Sql);
   }
 
-    [Fact]
+    [Test]
     public override void AddPrimaryKeyOperation()
     {
       base.AddPrimaryKeyOperation();
-      Assert.Equal(string.Empty, Sql);
+      Assert.AreEqual(string.Empty, Sql);
     }
   }
 }

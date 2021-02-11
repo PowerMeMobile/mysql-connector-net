@@ -1,4 +1,4 @@
-// Copyright (c) 2004, 2019, Oracle and/or its affiliates. All rights reserved.
+// Copyright (c) 2004, 2020, Oracle and/or its affiliates.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -80,7 +80,6 @@ namespace MySql.Data.MySqlClient
     OutputParameters = 4096
   }
 
-
   /// <summary>
   /// DB Operations Code
   /// </summary>
@@ -107,7 +106,7 @@ namespace MySql.Data.MySqlClient
     BINLOG_DUMP = 18,
     TABLE_DUMP = 19,
     CONNECT_OUT = 20,
-    REGISTER_SLAVE = 21,
+    REGISTER_REPLICA = 21,
     PREPARE = 22,
     EXECUTE = 23,
     LONG_DATA = 24,
@@ -116,7 +115,6 @@ namespace MySql.Data.MySqlClient
     SET_OPTION = 27,
     FETCH = 28
   }
-
 
   /// <summary>
   /// Specifies MySQL specific data type of a field, property, for use in a <see cref="MySqlParameter"/>.
@@ -308,7 +306,6 @@ namespace MySql.Data.MySqlClient
     Guid = 854
   };
 
-
   internal enum Field_Type : byte
   {
     DECIMAL = 0,
@@ -496,6 +493,39 @@ namespace MySql.Data.MySqlClient
     /// removing locked rows from the result set.
     /// </summary>
     SkipLocked = 2
+  }
+
+  /// <summary>
+  /// Defines the type of compression used when data is exchanged between client and server.
+  /// </summary>
+  public enum CompressionType
+  {
+    /// <summary>
+    /// Uses compression if client and server are able to reach a concensus. Otherwise, compression
+    /// is not used.
+    /// </summary>
+    Preferred,
+    /// <summary>
+    /// Enforces the use of compression. If no concensus is reached, an error is raised.
+    /// </summary>
+    Required,
+    /// <summary>
+    /// Disables compression.
+    /// </summary>
+    Disabled
+  }
+
+  /// <summary>
+  /// Defines the compression algorithms that can be used.
+  /// </summary>
+  public enum CompressionAlgorithms
+  {
+    zstd_stream,
+    lz4_message,
+    // deflate_stream is not supported in .NET Framework.
+#if !NET452
+    deflate_stream
+#endif
   }
 
   internal class MySqlConnectAttrs

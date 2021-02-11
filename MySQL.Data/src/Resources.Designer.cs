@@ -10,8 +10,8 @@
 
 namespace MySql.Data {
     using System;
-  using System.Reflection;
-   
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -39,7 +39,7 @@ namespace MySql.Data {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MySql.Data.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MySql.Data.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -115,7 +115,7 @@ namespace MySql.Data {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  The buffer cannot be null.
+        ///   Looks up a localized string similar to The buffer cannot be null.
         /// </summary>
         public static string BufferCannotBeNull {
             get {
@@ -124,7 +124,7 @@ namespace MySql.Data {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Buffer is not large enough.
+        ///   Looks up a localized string similar to The buffer is not large enough.
         /// </summary>
         public static string BufferNotLargeEnough {
             get {
@@ -183,6 +183,15 @@ namespace MySql.Data {
         public static string ChaosNotSupported {
             get {
                 return ResourceManager.GetString("ChaosNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear-password authentication is not supported over insecure channels..
+        /// </summary>
+        public static string ClearPasswordNotSupported {
+            get {
+                return ResourceManager.GetString("ClearPasswordNotSupported", resourceCulture);
             }
         }
         
@@ -304,6 +313,15 @@ namespace MySql.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The {0} algorithm being used by the server({1}) has been deprecated and will be removed in a future version. It is recommended that you configure the server to use a non-deprecated {0} algorithm..
+        /// </summary>
+        public static string DeprecatedSshAlgorithm {
+            get {
+                return ResourceManager.GetString("DeprecatedSshAlgorithm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MySQL Connector/NET does not currently support distributed transactions..
         /// </summary>
         public static string DistributedTxnNotSupported {
@@ -381,6 +399,15 @@ namespace MySql.Data {
         public static string ErrorCreatingSocket {
             get {
                 return ResourceManager.GetString("ErrorCreatingSocket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verify that user &apos;{0}&apos;@&apos;{1}&apos; has enough privileges to execute..
+        /// </summary>
+        public static string ExecuteProcedureUnauthorized {
+            get {
+                return ResourceManager.GetString("ExecuteProcedureUnauthorized", resourceCulture);
             }
         }
         
@@ -538,6 +565,15 @@ namespace MySql.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Certificate with Thumbprint &apos;{0}&apos; not found..
+        /// </summary>
+        public static string InvalidCertificateThumbprint {
+            get {
+                return ResourceManager.GetString("InvalidCertificateThumbprint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have specified an invalid column ordinal..
         /// </summary>
         public static string InvalidColumnOrdinal {
@@ -588,6 +624,15 @@ namespace MySql.Data {
         public static string InvalidOptionWhenSslDisabled {
             get {
                 return ResourceManager.GetString("InvalidOptionWhenSslDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Either provide a valid path for &apos;allowloadlocalinfileinpath&apos; or enable &apos;allowloadlocalinfile&apos;..
+        /// </summary>
+        public static string InvalidPathForLoadLocalInfile {
+            get {
+                return ResourceManager.GetString("InvalidPathForLoadLocalInfile", resourceCulture);
             }
         }
         
@@ -678,71 +723,6 @@ namespace MySql.Data {
         public static string KeywordNotSupported {
             get {
                 return ResourceManager.GetString("KeywordNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ACCESSIBLE
-        ///ADD
-        ///ALL
-        ///ALTER
-        ///ANALYZE
-        ///AND
-        ///AS
-        ///ASC
-        ///ASENSITIVE
-        ///BEFORE
-        ///BEGIN
-        ///BETWEEN
-        ///BIGINT
-        ///BINARY
-        ///BLOB
-        ///BOTH
-        ///BY
-        ///CALL
-        ///CASCADE
-        ///CASE
-        ///CHANGE
-        ///CHAR
-        ///CHARACTER
-        ///CHECK
-        ///COLLATE
-        ///COLUMN
-        ///COMMIT
-        ///CONDITION
-        ///CONNECTION
-        ///CONSTRAINT
-        ///CONTINUE
-        ///CONVERT
-        ///CREATE
-        ///CROSS
-        ///CURRENT_DATE
-        ///CURRENT_TIME
-        ///CURRENT_TIMESTAMP
-        ///CURRENT_USER
-        ///CURSOR
-        ///DATABASE
-        ///DATABASES
-        ///DAY_HOUR
-        ///DAY_MICROSECOND
-        ///DAY_MINUTE
-        ///DAY_SECOND
-        ///DEC
-        ///DECIMAL
-        ///DECLARE
-        ///DEFAULT
-        ///DELAYED
-        ///DELETE
-        ///DESC
-        ///DESCRIBE
-        ///DETERMINISTIC
-        ///DISTINCT
-        ///DISTINCTROW
-        ///D [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string keywords {
-            get {
-                return ResourceManager.GetString("keywords", resourceCulture);
             }
         }
         
@@ -873,7 +853,7 @@ namespace MySql.Data {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Offset cannot be negative.
+        ///   Looks up a localized string similar to The offset cannot be negative.
         /// </summary>
         public static string OffsetCannotBeNegative {
             get {
@@ -1269,7 +1249,7 @@ namespace MySql.Data {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  The stream does not support reading.
+        ///   Looks up a localized string similar to The stream does not support reading.
         /// </summary>
         public static string StreamNoRead {
             get {
@@ -1652,6 +1632,15 @@ namespace MySql.Data {
         public static string UnknownConnectionProtocol {
             get {
                 return ResourceManager.GetString("UnknownConnectionProtocol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trying to upload a file from outside the path set on &apos;allowloadlocalinfileinpath&apos; is invalid..
+        /// </summary>
+        public static string UnsafePathForLoadLocalInfile {
+            get {
+                return ResourceManager.GetString("UnsafePathForLoadLocalInfile", resourceCulture);
             }
         }
         

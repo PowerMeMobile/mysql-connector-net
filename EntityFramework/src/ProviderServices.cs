@@ -1,4 +1,4 @@
-// Copyright (c) 2014, 2018, Oracle and/or its affiliates. All rights reserved.
+// Copyright (c) 2014, 2020, Oracle and/or its affiliates.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -43,6 +43,9 @@ using System.Linq;
 
 namespace MySql.Data.MySqlClient
 {
+	/// <summary>
+  /// Constructs a script that generates a table.
+  /// </summary>
   public class MySqlScriptServices
 	{
 		public string GetTableCreateScript(EntitySet entitySet, string connectionString, string version)
@@ -65,6 +68,9 @@ namespace MySql.Data.MySqlClient
 		}
 	}
 
+	/// <summary>
+	/// The <see cref="DbProviderServices"/> implementation for the MySqlClient provider for MySQL Server.
+	/// </summary>
 	public sealed class MySqlProviderServices : DbProviderServices
 	{
 		internal static readonly MySqlProviderServices Instance;
@@ -131,13 +137,11 @@ namespace MySql.Data.MySqlClient
 				parameter.Direction = ParameterDirection.Input;
 				parameter.DbType = Metadata.GetDbType(queryParameter.Value);
 
-#if NET_45_OR_GREATER
 				if (queryParameter.Value.EdmType is PrimitiveType &&
 				((PrimitiveType)queryParameter.Value.EdmType).PrimitiveTypeKind == PrimitiveTypeKind.Geometry)
 				{
 					((MySqlParameter)parameter).MySqlDbType = MySqlDbType.Geometry;
 				}
-#endif
 
 				FunctionParameter funcParam;
 				if (function != null &&
@@ -245,10 +249,7 @@ namespace MySql.Data.MySqlClient
 				serverVersion = new Version(v.Major + "." + v.Minor);
 
                 double version = double.Parse(c.ServerVersion.Substring(0, 3), CultureInfo.InvariantCulture);
-                if (version < 5.0) throw new NotSupportedException("Versions of MySQL prior to 5.0 are not currently supported");
-                if (version < 5.1) return "5.0";
-                if (version < 5.5) return "5.1";
-                if (version < 5.6) return "5.5";
+                if (version < 5.6) throw new NotSupportedException("Versions of MySQL prior to 5.6 are not currently supported");
                 if (version < 5.7) return "5.6";
                 if (version < 8.0) return "5.7";
                 return "8.0";

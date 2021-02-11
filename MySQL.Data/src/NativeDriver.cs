@@ -1,4 +1,4 @@
-// Copyright (c) 2004, 2019, Oracle and/or its affiliates. All rights reserved.
+// Copyright (c) 2004, 2020 Oracle and/or its affiliates.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -35,6 +35,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace MySql.Data.MySqlClient
 {
@@ -328,7 +329,7 @@ namespace MySql.Data.MySqlClient
       ClientFlags flags = ClientFlags.MULTI_RESULTS;
 
       // allow load data local infile
-      if (Settings.AllowLoadLocalInfile)
+      if (Settings.AllowLoadLocalInfile || !String.IsNullOrWhiteSpace(Settings.AllowLoadLocalInfileInPath))
         flags |= ClientFlags.LOCAL_FILES;
 
       if (!Settings.UseAffectedRows)
@@ -502,9 +503,13 @@ namespace MySql.Data.MySqlClient
       int fieldCount = (int)packet.ReadFieldLength();
       if (-1 == fieldCount)
       {
-        if (this.Settings.AllowLoadLocalInfile)
+        if (Settings.AllowLoadLocalInfile || !string.IsNullOrWhiteSpace(Settings.AllowLoadLocalInfileInPath))
         {
           string filename = packet.ReadString();
+
+          if (!Settings.AllowLoadLocalInfile)
+            ValidateLocalInfileSafePath(filename);
+
           SendFileToServer(filename);
 
           return GetResult(ref affectedRow, ref insertedId);
@@ -512,7 +517,10 @@ namespace MySql.Data.MySqlClient
         else
         {
           stream.Close();
-          throw new MySqlException(Resources.LocalInfileDisabled);
+
+          if (Settings.AllowLoadLocalInfile)
+            throw new MySqlException(Resources.LocalInfileDisabled, (int)MySqlErrorCode.LoadInfo);
+          throw new MySqlException(Resources.InvalidPathForLoadLocalInfile, (int)MySqlErrorCode.LoadInfo);
         }
       }
       else if (fieldCount == 0)
@@ -532,6 +540,21 @@ namespace MySql.Data.MySqlClient
         }
       }
       return fieldCount;
+    }
+
+    /// <summary>
+    /// Verify that the file to upload is in a valid directory
+    /// according to the safe path entered by a user under
+    /// "AllowLoadLocalInfileInPath" connection option.
+    /// </summary>
+    /// <param name="filePath">File to validate against the safe path.</param>
+    private void ValidateLocalInfileSafePath(string filePath)
+    {
+      if (!Path.GetFullPath(filePath).StartsWith(Path.GetFullPath(Settings.AllowLoadLocalInfileInPath)))
+      {
+        stream.Close();
+        throw new MySqlException(Resources.UnsafePathForLoadLocalInfile, (int)MySqlErrorCode.LoadInfo);
+      }
     }
 
     /// <summary>
@@ -561,6 +584,7 @@ namespace MySql.Data.MySqlClient
       }
       catch (Exception ex)
       {
+        stream.Close();
         throw new MySqlException("Error during LOAD DATA LOCAL INFILE", ex);
       }
     }
@@ -579,13 +603,25 @@ namespace MySql.Data.MySqlClient
     {
       long length = -1;
       bool isNull;
+      Regex regex = new Regex(@"(?i)^[0-9A-F]{8}[-](?:[0-9A-F]{4}[-]){3}[0-9A-F]{12}$"); // check for GUID format
 
       if (nullMap != null)
+      {
         isNull = nullMap[index + 2];
+        if (!MySqlField.GetIMySqlValue(field.Type, Settings).GetType().Equals(valObject.GetType()) && !field.IsUnsigned)
+          length = packet.ReadFieldLength();
+      }
       else
       {
         length = packet.ReadFieldLength();
         isNull = length == -1;
+      }
+
+      if ((valObject.MySqlDbType is MySqlDbType.Guid && !Settings.OldGuids) &&
+        !regex.IsMatch(Encoding.GetString(packet.Buffer, packet.Position, (int)length)))
+      {
+        field.Type = MySqlDbType.String;
+        valObject = field.GetValueObject();
       }
 
       packet.Encoding = field.Encoding;

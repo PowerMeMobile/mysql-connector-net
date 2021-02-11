@@ -1,4 +1,4 @@
-// Copyright (c) 2004, 2019, Oracle and/or its affiliates. All rights reserved.
+// Copyright (c) 2004, 2020 Oracle and/or its affiliates.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -641,7 +641,7 @@ namespace MySql.Data.MySqlClient
             row["DTD_IDENTIFIER"] = StringUtility.ToLowerInvariant(routineType) == "function" ?
               (object)reader.GetString("DTD_IDENTIFIER") : DBNull.Value;
             row["ROUTINE_BODY"] = "SQL";
-            row["ROUTINE_DEFINITION"] = reader.GetString("routine_definition");
+            row["ROUTINE_DEFINITION"] = reader.GetBodyDefinition("routine_definition");
             row["EXTERNAL_NAME"] = DBNull.Value;
             row["EXTERNAL_LANGUAGE"] = DBNull.Value;
             row["PARAMETER_STYLE"] = "SQL";
@@ -664,7 +664,7 @@ namespace MySql.Data.MySqlClient
         {
           if (restrictions.Length >= 2 && restrictions[1] != null)
             sql.AppendFormat(CultureInfo.InvariantCulture,
-              " AND db LIKE '{0}'", restrictions[1]);
+              " AND lower(db) LIKE '{0}'", restrictions[1].ToLower());
           if (restrictions.Length >= 3 && restrictions[2] != null)
             sql.AppendFormat(CultureInfo.InvariantCulture,
               " AND name LIKE '{0}'", restrictions[2]);
@@ -688,7 +688,7 @@ namespace MySql.Data.MySqlClient
             row["DTD_IDENTIFIER"] = StringUtility.ToLowerInvariant(routineType) == "function" ?
               (object)reader.GetString("returns") : DBNull.Value;
             row["ROUTINE_BODY"] = "SQL";
-            row["ROUTINE_DEFINITION"] = reader.GetString("body");
+            row["ROUTINE_DEFINITION"] = reader.GetBodyDefinition("body");
             row["EXTERNAL_NAME"] = DBNull.Value;
             row["EXTERNAL_LANGUAGE"] = DBNull.Value;
             row["PARAMETER_STYLE"] = "SQL";
@@ -878,22 +878,33 @@ namespace MySql.Data.MySqlClient
       return dt;
     }
 
-    private static MySqlSchemaCollection GetReservedWords()
+    internal static MySqlSchemaCollection GetReservedWords()
     {
       MySqlSchemaCollection dt = new MySqlSchemaCollection("ReservedWords");
+      string resourceName = "MySql.Data.Properties.ReservedWords.txt";
       dt.AddColumn(DbMetaDataColumnNames.ReservedWord, typeof(string));
-      Stream str = Assembly.GetExecutingAssembly().GetManifestResourceStream(
-        "MySql.Data.Properties.ReservedWords.txt");
-
-      StreamReader sr = new StreamReader(str);
-      string line = sr.ReadLine();
-      while (line != null)
+      using (Stream str = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
       {
-        MySqlSchemaRow row = dt.AddRow();
-        row[0] = line;
-        line = sr.ReadLine();
+        if (str == null)
+          throw new Exception($"Resource {resourceName} not found in {Assembly.GetExecutingAssembly()}.");
+
+        using (StreamReader sr = new StreamReader(str))
+        {
+          string line = sr.ReadLine();
+          while (line != null)
+          {
+            string[] keywords = line.Split(new char[] { ' ' });
+            foreach (string s in keywords)
+            {
+              if (String.IsNullOrEmpty(s)) continue;
+              MySqlSchemaRow row = dt.AddRow();
+              row[0] = s;
+            }
+
+            line = sr.ReadLine();
+          }
+        }
       }
-      sr.Dispose();
 
       return dt;
     }

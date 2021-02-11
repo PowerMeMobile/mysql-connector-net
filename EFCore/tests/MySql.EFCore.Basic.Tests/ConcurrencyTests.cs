@@ -1,4 +1,4 @@
-// Copyright (c) 2016, 2019, Oracle and/or its affiliates. All rights reserved.
+// Copyright (c) 2016, 2020, Oracle and/or its affiliates. All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -28,21 +28,17 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using MySql.Data.EntityFrameworkCore.Tests.DbContextClasses;
-using MySql.Data.EntityFrameworkCore;
+using MySql.EntityFrameworkCore.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
-using MySql.Data.EntityFrameworkCore.Extensions;
+using NUnit.Framework;
+using MySql.EntityFrameworkCore.Basic.Tests.DbContextClasses;
 
-namespace MySql.Data.EntityFrameworkCore.Tests
+namespace MySql.EntityFrameworkCore.Basic.Tests
 {
     public class ConcurrencyTests
     {
-
-        [Fact]
+        [Test]
         public void CanHandleConcurrencyConflicts()
         {           
             var serviceCollection = new ServiceCollection();
@@ -87,7 +83,7 @@ namespace MySql.Data.EntityFrameworkCore.Tests
                                     var originalValue = entry.Property(property.Name).OriginalValue;
                                     var databaseValue = databaseEntry.Property(property.Name).CurrentValue;
                                     entry.Property(property.Name).OriginalValue = databaseEntry.Property(property.Name).CurrentValue;
-                                    Assert.Equal("Jane", databaseValue);
+                                    Assert.AreEqual("Jane", databaseValue);
                                 }
                             }
                         }

@@ -1,4 +1,4 @@
-// Copyright (c) 2004, 2016, Oracle and/or its affiliates. All rights reserved.
+// Copyright (c) 2004, 2020 Oracle and/or its affiliates.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -100,20 +100,36 @@ namespace MySql.Data.MySqlClient
       return StringUtility.ToUpperInvariant(dtdSubstring);
     }
 
-    private string FixProcedureName(string name)
+    internal static string FixProcedureName(string spName, string db)
     {
-      string[] parts = name.Split('.');
-      for (int i = 0; i < parts.Length; i++)
-        if (!parts[i].StartsWith("`", StringComparison.Ordinal))
-          parts[i] = String.Format("`{0}`", parts[i]);
-      if (parts.Length == 1) return parts[0];
-      return String.Format("{0}.{1}", parts[0], parts[1]);
+      string spNameWithoutQuotes = spName.Replace("`", string.Empty);
+
+      if (!string.IsNullOrEmpty(db))
+      {
+        if (spNameWithoutQuotes.Contains(db + "."))
+          spNameWithoutQuotes = spNameWithoutQuotes.Remove(0, db.Length + 1);
+      }
+      else
+      {
+        string[] parts = spNameWithoutQuotes.Split('.');
+        if (parts.Length == 2)
+        {
+          db = parts[0];
+          spNameWithoutQuotes = parts[1];
+        }
+      }
+
+      return string.IsNullOrEmpty(db)
+        ? spName
+        : string.Format("`{0}`.`{1}`", db, spNameWithoutQuotes);
     }
 
     private MySqlParameter GetAndFixParameter(string spName, MySqlSchemaRow param, bool realAsFloat, MySqlParameter returnParameter)
     {
       string mode = (string)param["PARAMETER_MODE"];
       string pName = (string)param["PARAMETER_NAME"];
+      string datatype = (string)param["DATA_TYPE"];
+      bool unsigned = GetFlags(param["DTD_IDENTIFIER"].ToString()).IndexOf("UNSIGNED") != -1;
 
       if (param["ORDINAL_POSITION"].Equals(0))
       {
@@ -126,11 +142,8 @@ namespace MySql.Data.MySqlClient
       // make sure the parameters given to us have an appropriate type set if it's not already
       MySqlParameter p = command.Parameters.GetParameterFlexible(pName, true);
       if (!p.TypeHasBeenSet)
-      {
-        string datatype = (string)param["DATA_TYPE"];
-        bool unsigned = GetFlags(param["DTD_IDENTIFIER"].ToString()).IndexOf("UNSIGNED") != -1;
         p.MySqlDbType = MetaData.NameToType(datatype, unsigned, realAsFloat, Connection);
-      }
+
       return p;
     }
 
@@ -160,9 +173,7 @@ namespace MySql.Data.MySqlClient
       // first retrieve the procedure definition from our
       // procedure cache
       string spName = commandText;
-      if (spName.IndexOf(".") == -1 && !String.IsNullOrEmpty(Connection.Database))
-        spName = Connection.Database + "." + spName;
-      spName = FixProcedureName(spName);
+      spName = FixProcedureName(spName, Connection.Database);
 
       MySqlParameter returnParameter = GetReturnParameter();
 
@@ -265,7 +276,7 @@ namespace MySql.Data.MySqlClient
 
       if ((reader.CommandBehavior & CommandBehavior.SchemaOnly) != 0)
         return;
-      
+
       // now read the output parameters data row
       reader.Read();
 

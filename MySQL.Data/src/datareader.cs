@@ -1,4 +1,4 @@
-// Copyright (c) 2004, 2019, Oracle and/or its affiliates. All rights reserved.
+// Copyright (c) 2004, 2020, Oracle and/or its affiliates.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -552,6 +552,19 @@ namespace MySql.Data.MySqlClient
       return Convert.ToSingle(v.Value);
     }
 
+    public string GetBodyDefinition(string column)
+    {
+      var value = GetValue(GetOrdinal(column));
+      if (value.GetType().FullName.Equals("System.Byte[]"))
+      {
+        return GetString(column);
+      }
+      else
+      {
+        return GetValue(GetOrdinal(column)).ToString();
+      }
+    }
+
     /// <summary>
     /// Gets the value of the specified column as a globally-unique identifier(GUID).
     /// </summary>
@@ -853,6 +866,14 @@ namespace MySql.Data.MySqlClient
               StoredProcedure sp = Statement as StoredProcedure;
               sp.ProcessOutputParameters(this);
               ResultSet.Close();
+              for (int i = 0; i < ResultSet.Fields.Length; i++)
+              {
+                if (ResultSet.Fields[i].ColumnName.StartsWith("@"+StoredProcedure.ParameterPrefix, StringComparison.OrdinalIgnoreCase))
+                {
+                  ResultSet = null;
+                  break;
+                }
+              }
               if (!sp.ServerProvidingOutputParameters) return false;
               // if we are using server side output parameters then we will get our ok packet
               // *after* the output parameters resultset

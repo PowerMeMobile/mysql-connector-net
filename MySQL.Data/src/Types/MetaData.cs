@@ -1,4 +1,4 @@
-// Copyright (c) 2004, 2019, Oracle and/or its affiliates. All rights reserved.
+// Copyright (c) 2004, 2020, Oracle and/or its affiliates.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -119,7 +119,6 @@ namespace MySql.Data.Types
         case "SET": return MySqlDbType.Set;
         case "ENUM": return MySqlDbType.Enum;
         case "BIT": return MySqlDbType.Bit;
-
         case "TINYINT":
           return unsigned ? MySqlDbType.UByte : MySqlDbType.Byte;
         case "BOOL":
@@ -138,7 +137,7 @@ namespace MySql.Data.Types
           return unsigned ? MySqlDbType.UInt64 : MySqlDbType.Int64;
         case "FLOAT": return MySqlDbType.Float;
         case "DOUBLE": return MySqlDbType.Double;
-        case "REAL": return
+        case "REAL": return 
            realAsFloat ? MySqlDbType.Float : MySqlDbType.Double;
         case "TEXT":
           return MySqlDbType.Text;
@@ -163,6 +162,5 @@ namespace MySql.Data.Types
       }
       throw new MySqlException("Unhandled type encountered");
     }
-
   }
 }

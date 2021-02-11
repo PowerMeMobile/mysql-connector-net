@@ -1,4 +1,4 @@
-// Copyright (c) 2016, 2018, Oracle and/or its affiliates. All rights reserved.
+// Copyright (c) 2016, 2020, Oracle and/or its affiliates. All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License, version 2.0, as
@@ -26,22 +26,30 @@
 // along with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA
 
-using MySql.Data.EntityFrameworkCore.Tests.DbContextClasses;
 using System;
 using System.Linq;
-using Xunit;
+using NUnit.Framework;
 using Microsoft.Extensions.DependencyInjection;
 using MySql.Data.MySqlClient;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore;
-using MySql.Data.EntityFrameworkCore.Extensions;
+using MySql.EntityFrameworkCore.Extensions;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using MySql.EntityFrameworkCore.Basic.Tests.DbContextClasses;
+using MySql.EntityFrameworkCore.Basic.Tests.Utils;
 
-namespace MySql.Data.EntityFrameworkCore.Tests
+namespace MySql.EntityFrameworkCore.Basic.Tests
 {
-  public class FunctionalTests : IDisposable
+  public class FunctionalTests
   {
+    [OneTimeTearDown]
+    public void OneTimeTearDown()
+    {
+      using (WorldContext context = new WorldContext())
+        context.Database.EnsureDeleted();
+    }
 
-    [Fact]
+    [Test]
     public void CanConnectWithConnectionOnConfiguring()
     {
       var serviceCollection = new ServiceCollection();
@@ -55,11 +63,12 @@ namespace MySql.Data.EntityFrameworkCore.Tests
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
         Assert.True(context.Posts.Count() == 0);
+        context.Database.EnsureDeleted();
       }
     }
 
 
-    [Fact]
+    [Test]
     public void CanThrowExceptionWhenNoConfiguration()
     {
       var serviceCollection = new ServiceCollection();
@@ -70,12 +79,12 @@ namespace MySql.Data.EntityFrameworkCore.Tests
 
       using (var context = serviceProvider.GetRequiredService<NoConfigurationContext>())
       {
-        Assert.Equal(CoreStrings.NoProviderConfigured, Assert.Throws<InvalidOperationException>(() => context.Blogs.Any()).Message);        
+        Assert.AreEqual(CoreStrings.NoProviderConfigured, Assert.Throws<InvalidOperationException>(() => context.Blogs.Any()).Message);        
       }
     }
 
 
-    [Fact]
+    [Test]
     public void CreatedDb()
     {
       var serviceCollection = new ServiceCollection();
@@ -103,7 +112,7 @@ namespace MySql.Data.EntityFrameworkCore.Tests
     }
 
 
-    [Fact]
+    [Test]
     public void EnsureRelationalPatterns()
     {
       var serviceCollection = new ServiceCollection();
@@ -131,7 +140,7 @@ namespace MySql.Data.EntityFrameworkCore.Tests
     }
 
 
-    [Fact]
+    [Test]
     public void CanUseIgnoreEntity()
     {
       var serviceCollection = new ServiceCollection();
@@ -151,7 +160,7 @@ namespace MySql.Data.EntityFrameworkCore.Tests
 
 
 
-    [Fact]
+    [Test]
     public void CanUseOptionsInDbContextCtor()
     {                      
       using (var context = new OptionsContext(new DbContextOptions<OptionsContext>(),
@@ -164,7 +173,7 @@ namespace MySql.Data.EntityFrameworkCore.Tests
 
     }
 
-    [Fact]
+    [Test]
     public void TestEnsureSchemaOperation()
     {
       using(var context = new WorldContext())
@@ -179,19 +188,6 @@ namespace MySql.Data.EntityFrameworkCore.Tests
         context.SaveChanges();
       }
     }
-
-
-    public void Dispose()
-    {
-        //ensure test database is deleted
-        using (var cnn = new MySqlConnection(MySQLTestStore.baseConnectionString))
-        {
-          cnn.Open();
-          var cmd = new MySqlCommand("DROP DATABASE IF EXISTS TEST", cnn);
-          cmd.ExecuteNonQuery();
-        }
-     }
-
 
     #region ContextClasses
 
@@ -209,11 +205,11 @@ namespace MySql.Data.EntityFrameworkCore.Tests
 
       protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
       {
-        Assert.Same(_options, optionsBuilder.Options);
+        Assert.AreSame(_options, optionsBuilder.Options);
 
         optionsBuilder.UseMySQL(_connection);
 
-        Assert.NotSame(_options, optionsBuilder.Options);
+        Assert.AreNotSame(_options, optionsBuilder.Options);
       }
 
       public override void Dispose()

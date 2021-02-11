@@ -1,12 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>MySql.Data.EntityFramework.CodeFirst.Tests</Description>
-    <Copyright>Copyright (c) 2016, 2019, Oracle and/or its affiliates. All rights reserved.</Copyright>
+    <Description>MySql.Data.EntityFramework.CodeFirTests</Description>
+    <Copyright>Copyright (c) 2016, 2021, Oracle and/or its affiliates. All rights reserved.</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>8.0.19</Version>
+    <Version>8.0.23</Version>
     <Authors>Oracle</Authors>
-    <TargetFramework>net452</TargetFramework>
+    <TargetFrameworks>net452;netcoreapp3.1;</TargetFrameworks>
     <AssemblyName>MySql.EntityFramework.Basic.Tests</AssemblyName>
     <PackageId>MySql.EntityFramework.Basic.Tests</PackageId>
     <PackageTags>MySql;.NET Connector;MySql Connector/NET</PackageTags>
@@ -24,6 +24,7 @@
     <DelaySign>True</DelaySign>
     <AssemblyOriginatorKeyFile>..\..\..\ConnectorNetPublicKey.snk</AssemblyOriginatorKeyFile>
     <RootNamespace>MySql.EntityFramework.Basic.Tests</RootNamespace>
+    <NoWarn>CA2100</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,26 +33,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.2.0" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
-    <PackageReference Include="System.Linq" Version="4.3.0" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.0-beta1-build3642" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;NET452;EF6</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET452;</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;RELEASE;NET452;EF6</DefineConstants>
+    <DefineConstants>TRACE;RELEASE;NET452;</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net452'">
     <Reference Include="System.Data" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />

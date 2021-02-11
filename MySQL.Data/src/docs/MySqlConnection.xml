@@ -106,7 +106,9 @@
     </remarks>
     <example>
     </example>
-    <param name="connectionString">The connection properties used to open the MySQL database. </param>
+    <param name="connectionString">
+      The connection properties used to open the MySQL database.
+    </param>
   </Ctor1>
 
   <Open>
@@ -430,6 +432,7 @@
   <BeginTransaction1>
     <summary>Begins a database transaction with the specified isolation level.</summary>
     <param name="iso">The isolation level under which the transaction should run. </param>
+    <param name="scope">The scope of the transaction. </param>
     <returns>An object representing the new transaction.</returns>
     <exception cref="InvalidOperationException">Parallel exceptions are not supported.</exception>
     <remarks>
@@ -1009,9 +1012,9 @@
             <td>
               Ignore Prepare
             </td>
-            <td>true</td>
+            <td>false</td>
             <td>
-              Instructs the provider to ignore any attempts to prepare commands.  This option
+              [This option has been deprecated since version 8.0.23.] Instructs the provider to ignore any attempts to prepare commands.  This option
               was added to allow a user to disable prepared statements in an entire application
               without modifying the code.  A user might want to do this if errors or bugs are
               encountered with MySQL prepared statements.
