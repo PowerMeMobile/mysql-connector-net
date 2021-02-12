@@ -31,6 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ubiety.Dns.Core.Common;
+using Ubiety.Dns.Core.Records;
 using MySql.Data.MySqlClient;
 
 namespace MySql.Data.Common
@@ -50,14 +51,8 @@ namespace MySql.Data.Common
     /// </summary>
     internal static void CreateResolver(string serviceName)
     {
-      _resolver = new Resolver
-      {
-        Recursion = true,
-        UseCache = true,
-        Retries = 3,
-        TransportType = TransportType.Udp
-      };
-
+      _resolver = ResolverBuilder.Begin().UseRecursion().EnableCache().SetRetries(3).Build();
+      _resolver.TransportType = TransportType.Udp;
       ServiceName = serviceName;
     }
 
@@ -76,8 +71,12 @@ namespace MySql.Data.Common
 
       Response response = _resolver.Query(ServiceName, qType, qClass);
 
-      foreach (var record in response.RecordSrv)
-        records.Add(record);
+      foreach (var record in response.Answers)
+      {
+        RecordSrv recordSrv = record.Record as RecordSrv;
+        if(recordSrv != null)
+          records.Add(new DnsSrvRecord(recordSrv));
+      }
 
       if (records.Count > 0)
       {

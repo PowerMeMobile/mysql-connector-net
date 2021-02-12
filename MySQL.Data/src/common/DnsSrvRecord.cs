@@ -81,15 +81,18 @@ namespace MySql.Data.Common
     internal DnsSrvRecord(RecordSrv recordSRV)
       : this(recordSRV.Port, recordSRV.Priority, recordSRV.Target, recordSRV.Weight)
     { }
+        internal DnsSrvRecord(RecordSrv recordSRV, string target)
+          : this(recordSRV.Port, recordSRV.Priority, target, recordSRV.Weight)
+        { }
 
-    /// <summary>
-    /// Compare two <see cref="DnsSrvRecord"/> objects. First, using their priority and
-    /// if both have the same, then using their weights.
-    /// </summary>
-    /// <param name="x">A <see cref="DnsSrvRecord"/> to compare.</param>
-    /// <param name="y">A <see cref="DnsSrvRecord"/> to compare.</param>
-    /// <returns></returns>
-    public int Compare(DnsSrvRecord x, DnsSrvRecord y)
+        /// <summary>
+        /// Compare two <see cref="DnsSrvRecord"/> objects. First, using their priority and
+        /// if both have the same, then using their weights.
+        /// </summary>
+        /// <param name="x">A <see cref="DnsSrvRecord"/> to compare.</param>
+        /// <param name="y">A <see cref="DnsSrvRecord"/> to compare.</param>
+        /// <returns></returns>
+        public int Compare(DnsSrvRecord x, DnsSrvRecord y)
     {
       int priorityDiff = x.Priority.CompareTo(y.Priority);
       return priorityDiff == 0 ? y.Weight.CompareTo(x.Weight) : priorityDiff;
@@ -104,9 +107,7 @@ namespace MySql.Data.Common
       if (recordSRV == null)
         return null;
 
-      recordSRV.Target = recordSRV.Target.TrimEnd('.');
-
-      return new DnsSrvRecord(recordSRV);
+      return new DnsSrvRecord(recordSRV, recordSRV.Target.TrimEnd('.'));
     }
   }
 }
