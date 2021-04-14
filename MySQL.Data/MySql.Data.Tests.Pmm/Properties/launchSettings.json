@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MySql.Data.Tests.Pmm": {
+      "commandName": "Project",
+      "commandLineArgs": "1 localhost 3306 zainksa root 1111"
+    }
+  }
+}
